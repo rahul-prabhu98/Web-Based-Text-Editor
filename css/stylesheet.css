@@ -1,0 +1,25 @@
+.background{
+    background-color: lightgreen;
+}
+
+body{
+    background-color: #ecf0f1;
+
+}
+
+.toolbar{
+    background-color: #34495e;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.editor{
+    border: 1px solid black;
+    background-color: white;
+    margin-top: 25px;
+    margin-left: 150px;
+    margin-right: 150px;
+    height: 1100px;
+
+
+}

@@ -2,9 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Word Processor</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+<div class = "mainpage">
+    <div class = "toolbar">
+        <button type="button" id="btnBold"><b>B</b></button>
+        <button type="button" id="btnItalic"><i>I</i></button>
+        <button type="button" id="btnUnderline"><u>U</u></button>
+        <button type="button" id="btnLog"><u>Log</u></button>
 
+        <button type="button" id="btnLeft"><u>Left</u></button>
+        <button type="button" id="btnRight"><u>Right</u></button>
+        <button type="button" id="btnCenter"><u>Center</u></button>
+    </div>
+    <div class="editor" contenteditable="true" id="textEditor">
+        <span class = "bold italic underline">Hi Bold Italic here</span><br>
+        <span> Hi </span><span class="bold">bold</span><span class = "italic"> Italic</span><span> here</span>
+        <br>
+        <span>Hi&nbsp;</span><span class="bold">Bo</span><span class = "bold italic">ld Ital</span><span>ic here</span><br>
+        <span> Hi </span><span class="bold">bold</span><span class = "bold"> Italic</span><span> here</span>
+    </div>
+</div>
 </body>
+<script src="JavaScript/main.js"></script>
 </html>
