@@ -14,6 +14,9 @@ function addClassToSelectedNodes(event){
 
     let cssClass =  event.currentTarget.getAttribute('fontType');
     let sel = window.getSelection();
+    if (sel.isCollapsed){
+        return;
+    }
     if (!sel.anchorNode.isSameNode(sel.focusNode)) {
         console.log("In different tags");
         let selRange = sel.getRangeAt(0);
@@ -24,8 +27,6 @@ function addClassToSelectedNodes(event){
         }
         abc = frag.childNodes;
 
-        console.log(abc);
-        console.log(abc.length);
         let output = '';
         /*for(let i=0;i<abc.length;i++){
             console.log(abc.);
@@ -34,13 +35,36 @@ function addClassToSelectedNodes(event){
             abcc.classList.add(cssClass);
 
         }*/
+        let todo = false;
+        let false_counter = 0;
+        let true_counter= 0;
 
         abc.forEach(function (item) {
-            item.classList.add(cssClass);
+            if(item.classList.contains(cssClass)){
+                true_counter++;
+            }else{
+                false_counter++;
+            }
+            console.log(item.parentElement);
+        });
+        if(false_counter == 0){
+            todo= false;
+        }else{
+            todo=true;
+        }
+
+        abc.forEach(function (item) {
+            if(todo){item.classList.add(cssClass);}else{item.classList.remove(cssClass);}
+            // item.classList.toggle(cssClass);
+            console.log(item.parentElement);
         });
 
         selRange.deleteContents();
         selRange.insertNode(frag);
+
+        
+
+        sel.removeAllRanges();
         return (output);
     }
     else
@@ -109,16 +133,84 @@ function addClassToSelectedNodes(event){
         selection.insertNode(span);
         selectionRange.deleteContents();*/
     }
+    deleteExtraSpans();
+
 }
 
 function addIntendation(event){
+
+
+
     let intendation =  event.currentTarget.getAttribute('intendation');
-    console.log(intendation);
+    let sel = window.getSelection();
+    if (sel.isCollapsed){
+        return;
+    }
+    let selRange = sel.getRangeAt(0);
+    let newFrag = selRange.cloneContents();
+   let abcd = getSelectedNodes();
+console.log(abcd);
+    //console.log(getCHildNodes.item(0));
+    if (sel.anchorNode.isSameNode(sel.focusNode)) {
+        sel.anchorNode.parentElement.parentElement.classList.value = intendation;
+    } else
+    {
+        if(sel.anchorNode.parentElement.closest('div') === sel.focusNode.parentElement.closest('div')){
+            sel.anchorNode.parentElement.parentElement.classList.value = intendation;
+            return;
+        }else {
+
+            for (let i = 0; i < abcd.length; i++) {
+                console.log(i);
+                console.log(abcd[i]);
+                if (abcd[i].nodeName == 'DIV') {
+                    console.log(abcd[i].parentElement);
+                abcd[i].classList.value = (intendation);
+            }
+            }
+            /*selRange.deleteContents();
+            selRange.insertNode(newFrag);
+            sel.removeAllRanges();*/
+
+
+        }
+        deleteExtraSpans();
+
+    }
+
+
+/*    abcd.forEach(function (item) {
+        console.log(item.);
+        item.parentElement.parentElement.classList.value = intendation;
+        console.log(item.parentElement);
+    });*/
+ /*   console.log(intendation);
     let selectedPara = document.getSelection();
-   
+
     let divElement = selectedPara.anchorNode.parentElement.parentElement;
     divElement.classList.value = intendation;
-    console.log(divElement.classList);
+    console.log(divElement.classList);*/
+}
+
+let wrapText  = function(){
+    if (textArea.innerHTML.length == 1){
+        let text = textArea.innerHTML;
+        let wrap = document.createElement('span');
+        wrap.innerHTML = text;
+        let tempDiv = document.createElement('div');
+        tempDiv.appendChild(wrap);
+        textArea.innerHTML = "";
+        textArea.appendChild(tempDiv);
+        let range = document.createRange();
+        let sel = window.getSelection();
+
+        range.setStart(textArea.childNodes.item(0).childNodes.item(0), 1);
+
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    deleteExtraSpans();
 }
 
 
@@ -129,6 +221,8 @@ btnLeft.setAttribute('intendation', 'left');
 btnRight.setAttribute('intendation', 'right');
 btnCenter.setAttribute('intendation', 'center');
 
+
+textArea.addEventListener('input', wrapText);
 btnBold.addEventListener('click', addClassToSelectedNodes);
 btnItalic.addEventListener('click', addClassToSelectedNodes);
 btnUnderline.addEventListener('click', addClassToSelectedNodes);
@@ -137,3 +231,68 @@ btnRight.addEventListener('click', addIntendation);
 btnCenter.addEventListener('click', addIntendation);
 //btnLog.addEventListener('click', splitData);
 
+
+
+
+function nextNode(node) {
+    if (node.hasChildNodes()) {
+        return node.firstChild;
+    } else {
+        while (node && !node.nextSibling) {
+            node = node.parentNode;
+        }
+        if (!node) {
+            return null;
+        }
+        return node.nextSibling;
+    }
+}
+
+function getRangeSelectedNodes(range) {
+    var node = range.startContainer;
+    var endNode = range.endContainer;
+
+
+    if (node == endNode) {
+        return [node];
+    }
+
+
+    var rangeNodes = [];
+    while (node && node != endNode) {
+        rangeNodes.push( node = nextNode(node) );
+    }
+
+
+    node = range.startContainer;
+    while (node && node != range.commonAncestorContainer) {
+        rangeNodes.unshift(node);
+        node = node.parentNode;
+    }
+
+    return rangeNodes;
+}
+
+function getSelectedNodes() {
+    if (window.getSelection) {
+        var sel = window.getSelection();
+        if (!sel.isCollapsed) {
+            return getRangeSelectedNodes(sel.getRangeAt(0));
+        }
+    }
+    return [];
+}
+
+
+
+function deleteExtraSpans(){
+ let allSpans =    document.querySelectorAll('span');
+
+ allSpans.forEach(function(item,index){
+
+     if(item.innerText == ""){
+         item.remove();
+     }
+
+ });
+}
